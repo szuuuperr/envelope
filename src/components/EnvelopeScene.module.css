@@ -1,0 +1,279 @@
+/*
+ * Anatomi amplop. Semua bentuk dibuat dengan clip-path — tanpa gambar.
+ * Keempat sisi (flap atas, dua sisi, dan bawah) bertemu di satu titik
+ * APEX sehingga saat tertutup seluruh persegi panjang tertutup rapat
+ * dan kertas di baliknya benar-benar tersembunyi.
+ */
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heading {
+  position: absolute;
+  top: calc(var(--stage-h) * 0.12);
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.headingLabel {
+  font-size: calc(var(--stage-w) * 0.028);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.headingGuest {
+  margin-top: calc(var(--stage-w) * 0.018);
+  font-family: var(--font-serif);
+  font-size: calc(var(--stage-w) * 0.062);
+  color: var(--ink);
+}
+
+/*
+ * Target ketuk sepanjang layar untuk tahap 'risen'. z-index-nya di atas
+ * semua isi adegan supaya ketukan di mana pun — pada kertas, pada amplop,
+ * atau pada ruang kosong — sama-sama membuka surat.
+ */
+.tapAll {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+}
+
+.hint {
+  position: absolute;
+  bottom: calc(var(--stage-h) * 0.1);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: calc(var(--stage-w) * 0.03);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* --- Badan amplop --- */
+/* Perspective diletakkan di sini (bukan di .scene) supaya flap sebagai
+   anak langsung ikut mendapat konteks 3D tanpa perlu rantai preserve-3d. */
+.envelope {
+  position: relative;
+  width: var(--env-w);
+  height: var(--env-h);
+  perspective: 1300px;
+}
+
+/* Target klik/keyboard, menutupi seluruh amplop selagi masih tersegel. */
+.tap {
+  position: absolute;
+  inset: -6%;
+  z-index: 10;
+  border-radius: calc(var(--env-w) * 0.03);
+}
+
+.shadow {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -7%;
+  height: 12%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(50, 30, 20, 0.34) 0%, rgba(50, 30, 20, 0) 70%);
+  filter: blur(4px);
+}
+
+/* Panel belakang */
+.back {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--env-w) * 0.018);
+  background: linear-gradient(160deg, var(--red-700) 0%, var(--red-800) 55%, var(--red-900) 100%);
+  z-index: 1;
+}
+
+/* --- Kertas --- */
+/*
+ * Kotak pemotong: tepi bawahnya sejajar dengan dasar amplop dan
+ * menjulang jauh ke atas. Jadi bagian kertas yang menggantung di bawah
+ * amplop terpotong (saat tertutup), tetapi kertas bebas naik ke atas.
+ */
+.letterClip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 500%;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.letterClip[data-unclipped='true'] {
+  overflow: visible;
+}
+
+/* Tanpa tinggi sendiri: kotak ini menempel pas pada kertas, sehingga
+   transform-origin yang dihitung di EnvelopeScene.tsx tetap sederhana. */
+.letterZoom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  will-change: transform;
+}
+
+/*
+ * Kertas dibuat SEBANGUN dengan kanvas — lebar dan tingginya sama-sama
+ * var(--letter-scale) kali ukuran kanvas. Ini syarat utama agar zoom-nya
+ * menjadi satu skala seragam (1 / --letter-scale) tanpa sisa: isi kertas
+ * mendarat tepat menimpa halaman surat, bukan melimpah keluar layar seperti
+ * kalau rasionya berbeda. Jadi jangan mengubah salah satunya saja.
+ */
+.letter {
+  width: calc(var(--stage-w) * var(--letter-scale));
+  height: calc(var(--stage-h) * var(--letter-scale));
+  border-radius: calc(var(--env-w) * 0.012);
+  will-change: transform;
+}
+
+/* --- Kantong depan: tiga segitiga --- */
+.front {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.panel {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--env-w) * 0.018);
+}
+
+/*
+ * Apex ketiga panel ini berada di 58% — sedikit LEBIH TINGGI dari ujung flap
+ * (60%), sehingga tepinya menyelip di bawah flap. Kalau apex-nya justru lebih
+ * rendah, akan tersisa celah setipis rambut di sepanjang tepi flap yang
+ * membuat kertas putih di baliknya mengintip keluar.
+ */
+/*
+ * Titik sudut sengaja dilebihkan sampai -1%/101%. Kalau berhenti tepat di
+ * 0%/100%, baris piksel paling tepi hanya tertutup separuh oleh antialias
+ * dan panel belakang yang gelap menyembul sebagai garis putus-putus tipis.
+ * Lukisan elemen tetap terpotong oleh kotaknya sendiri, jadi aman.
+ */
+.sideL {
+  clip-path: polygon(-1% -1%, 50% 58%, -1% 101%);
+  background: linear-gradient(100deg, var(--red-700) 0%, var(--red-800) 100%);
+}
+
+.sideR {
+  clip-path: polygon(101% -1%, 50% 58%, 101% 101%);
+  background: linear-gradient(260deg, var(--red-700) 0%, var(--red-800) 100%);
+}
+
+.bottom {
+  clip-path: polygon(-1% 101%, 50% 58%, 101% 101%);
+  background: linear-gradient(0deg, var(--red-500) 0%, var(--red-600) 60%, var(--red-700) 100%);
+  filter: drop-shadow(0 -2px 3px rgba(0, 0, 0, 0.22));
+}
+
+/* --- Flap atas --- */
+.flap {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  transform-origin: 50% 0%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+/*
+ * Di tengah putaran, flap secara fisik sudah berada di balik bidang amplop.
+ * z-index-nya diturunkan tepat pada titik itu — lewat animasi CSS diskrit,
+ * bukan interpolasi angka — supaya flap lewat di BELAKANG kertas yang naik.
+ * Durasinya sengaja disamakan dengan animasi rotateX di EnvelopeScene.tsx.
+ */
+.flap[data-open='true'] {
+  animation: flapSink 0.9s linear forwards;
+}
+
+@keyframes flapSink {
+  0%, 45% { z-index: 4; }
+  46%, 100% { z-index: 0; }
+}
+
+.flapFace,
+.flapBack {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: calc(var(--env-w) * 0.018);
+}
+
+.flapFace {
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
+}
+
+/*
+ * Sisi dalam flap. rotateX(180deg) berporos di TENGAH kotak, jadi kalau
+ * clip-path-nya sama dengan sisi depan, segitiganya akan mendarat di bagian
+ * bawah kotak. Karena itu clip-path di sini sengaja dicerminkan secara
+ * vertikal, supaya setelah diputar posisinya persis menimpa sisi depan.
+ */
+.flapBack {
+  clip-path: polygon(0 100%, 100% 100%, 50% 40%);
+  transform: rotateX(180deg);
+}
+
+/* Tanpa filter di sini: `filter` memaksa elemen menjadi datar dan akan
+   mematahkan konteks 3D dari .flap. Kedalaman diambil dari gradien saja. */
+.flapFace {
+  background: linear-gradient(185deg, var(--red-500) 0%, var(--red-600) 62%, var(--red-800) 100%);
+}
+
+.flapBack {
+  background: linear-gradient(175deg, var(--red-700) 0%, var(--red-800) 45%, var(--red-inner) 100%);
+}
+
+/* --- Wax seal --- */
+.seal {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  width: calc(var(--env-w) * 0.19);
+  height: calc(var(--env-w) * 0.19);
+  margin-left: calc(var(--env-w) * -0.095);
+  margin-top: calc(var(--env-w) * -0.095);
+  z-index: 5;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 35% 30%, #f3a3a7 0%, var(--wax) 45%, var(--wax-deep) 100%);
+  box-shadow:
+    inset 0 -2px 4px rgba(120, 40, 45, 0.45),
+    inset 0 2px 3px rgba(255, 255, 255, 0.4),
+    0 2px 5px rgba(60, 20, 20, 0.35);
+  pointer-events: none;
+}
+
+.seal::before {
+  content: '';
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  border: 1px dashed rgba(140, 55, 60, 0.35);
+}
+
+.seal svg {
+  width: 44%;
+  height: 44%;
+  fill: var(--wax-deep);
+  opacity: 0.75;
+}

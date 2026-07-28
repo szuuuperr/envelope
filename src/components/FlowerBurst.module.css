@@ -1,0 +1,36 @@
+.layer {
+  position: fixed;
+  /* Harus di atas lockscreen (z-index 30) — spiralnya memang dimaksudkan
+     menyapu DI DEPAN layar sandi, bukan muncul setelah layar itu hilang. */
+  z-index: 40;
+  pointer-events: none;
+  overflow: visible;
+  /* Lebih besar dari viewport, di-center kan */
+  width: 200vw;
+  height: 200vh;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
+/*
+ * Penengahan dikerjakan sepenuhnya oleh CSS lewat left/top, bukan lewat
+ * translate(-50%, -50%). Dengan begitu properti transform sepenuhnya bebas
+ * dipakai animasi — mencampur persen translate dengan satuan vmin di dalam
+ * calc() tidak diinterpolasi dengan andal.
+ */
+/*
+ * TANPA filter apa pun, dan ini disengaja. Lapisan ini memasang 500 kelopak
+ * sekaligus; satu drop-shadow saja berarti 500 lintasan rasterisasi tambahan
+ * yang tidak bisa ditangani compositor, dan itulah beda antara spiral yang
+ * mengalir dengan yang tersendat di ponsel. Kedalamannya toh nyaris tak
+ * terlihat karena kelopaknya memang saling menumpuk rapat.
+ */
+.petal {
+  position: absolute;
+  left: calc(50% - var(--size) / 2);
+  top: calc(50% - var(--size) / 2);
+  width: var(--size);
+  height: auto;
+  will-change: transform, opacity;
+}

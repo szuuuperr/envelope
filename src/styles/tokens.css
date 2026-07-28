@@ -1,0 +1,70 @@
+:root {
+  /* --- Warna amplop --- */
+  --red-900: #5c0a0f;
+  --red-800: #7a0d14;
+  --red-700: #96111a;
+  --red-600: #b31220;
+  --red-500: #c8171f;
+  --red-400: #d92b32;
+
+  /* Bagian dalam flap (lebih gelap, seperti sisi belakang kertas) */
+  --red-inner: #6d0a10;
+
+  /* --- Kertas & latar --- */
+  --paper: #f6f2e9;
+  --paper-edge: #e6dfd0;
+  --bg: #d9d5cc;
+  --bg-deep: #c9c4b9;
+
+  /* --- Tinta --- */
+  --ink: #2c2724;
+  --ink-soft: #6b625b;
+  --ink-red: #8e1119;
+
+  /* --- Wax seal --- */
+  --wax: #e8858a;
+  --wax-deep: #c9666c;
+
+  /* --- Tipografi --- */
+  --font-serif: 'Playfair Display', 'Didot', 'Bodoni MT', Georgia, 'Times New Roman', serif;
+  --font-script: 'Pinyon Script', 'Snell Roundhand', 'Segoe Script', cursive;
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* --- Kanvas (mobile-first portrait) --- */
+  /*
+   * Ukuran kanvas disimpan dua kali: `*-base` adalah nilai sesungguhnya dan
+   * tidak pernah ditimpa, sedangkan `--stage-w`/`--stage-h` adalah nilai yang
+   * dibaca semua komponen. Kertas surat menimpa dua yang terakhir dengan versi
+   * mini (lihat --letter-scale) supaya seluruh CSS halaman surat bisa dipakai
+   * ulang apa adanya di dalam kertas. Penimpaan itu butuh sumber yang terpisah:
+   * `--stage-w: calc(var(--stage-w) * ...)` adalah siklus dan ditolak CSS.
+   */
+  --stage-w-base: min(100vw, 480px);
+  --stage-h-base: 100dvh;
+  --stage-w: var(--stage-w-base);
+  --stage-h: var(--stage-h-base);
+
+  /*
+   * Kertas dibuat sebangun dengan kanvas dan berukuran tepat sekian kali
+   * kanvas. Karena rasionya identik, zoom kertas menjadi satu skala seragam
+   * (1 / nilai ini) sehingga isi kertas mendarat persis menimpa halaman surat.
+   * Nilainya dipilih agar kertas yang sudah keluar penuh masih muat di layar
+   * pada rasio kanvas paling jangkung sekalipun.
+   */
+  --letter-scale: 0.55;
+
+  /* --- Easing --- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* --- Ukuran amplop (relatif terhadap lebar kanvas) --- */
+  --env-w: calc(var(--stage-w) * 0.76);
+  --env-h: calc(var(--env-w) * 0.68);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --stage-w-base: min(58dvh, 480px);
+    --stage-h-base: min(92dvh, calc(480px * 16 / 9));
+  }
+}

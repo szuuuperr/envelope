@@ -1,0 +1,28 @@
+/*
+ * Lapisan hiasan yang menutupi seluruh kanvas. z-index-nya di atas dock
+ * pemutar musik (6) supaya bunga benar-benar melintas di depan segalanya,
+ * dan tembus sentuhan supaya tidak ada satu pun tombol yang terhalang.
+ */
+.layer {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/*
+ * Titik awal berada tepat DI BAWAH tepi kanvas, jadi bunga sudah bergerak
+ * sebelum terlihat dan tidak pernah tampak muncul begitu saja dari udara.
+ * `left` diisi dari style inline; margin negatif menggeser setengah lebarnya
+ * supaya angka persen itu menunjuk ke titik tengah bunga, bukan tepi kirinya.
+ */
+.bloom {
+  position: absolute;
+  bottom: calc(var(--size) * -1.2);
+  width: var(--size);
+  height: auto;
+  margin-left: calc(var(--size) / -2);
+  filter: drop-shadow(0 6px 10px rgba(90, 40, 45, 0.18));
+  will-change: transform, opacity;
+}

@@ -1,0 +1,26 @@
+/* Taman latar: bunga besar yang mengambang perlahan di belakang amplop. */
+.garden {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bloom {
+  position: absolute;
+  width: var(--size);
+  height: auto;
+  will-change: transform;
+}
+
+/* Denyut halus pada latar, supaya bidang di belakang bunga ikut hidup
+   dan tidak terasa seperti gambar diam. */
+.glow {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(216, 158, 162, 0.18) 0%, transparent 46%),
+    radial-gradient(circle at 74% 72%, rgba(168, 190, 160, 0.15) 0%, transparent 44%);
+  will-change: transform, opacity;
+}

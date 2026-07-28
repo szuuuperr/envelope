@@ -1,0 +1,31 @@
+/*
+ * Kertas = kanvas versi mini. Dengan menimpa --stage-w/--stage-h di sini,
+ * seluruh CSS halaman surat (Invitation.module.css) yang memang ditulis
+ * relatif terhadap kedua nilai itu langsung ikut mengecil dengan proporsi
+ * yang sama persis — tanpa perlu satu pun aturan tandingan. Sumbernya sengaja
+ * `--stage-*-base` yang tidak pernah ditimpa siapa pun; memakai --stage-w di
+ * ruas kanan akan membentuk siklus dan diabaikan browser.
+ */
+.paper {
+  --stage-w: calc(var(--stage-w-base) * var(--letter-scale));
+  --stage-h: calc(var(--stage-h-base) * var(--letter-scale));
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 10px 26px rgba(60, 35, 25, 0.26);
+}
+
+/*
+ * Teks harus berada di antara kedua lapisan latar: di atas bunga sudut
+ * (z-index 2) tetapi di bawah butiran dan vignette (z-index 4). Angka 3
+ * sengaja sama dengan .page pada halaman surat.
+ */
+.content {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}

@@ -1,0 +1,265 @@
+/*
+ * Bilah pemutar lagu.
+ *
+ * Ada DUA ukuran acuan di sini, dan bedanya penting:
+ *   --player-w  lebar bilah, dipakai hanya untuk lebar kartu. Nilainya besar
+ *               karena bilah memang diminta membentang selebar layar.
+ *   --player-u  satuan untuk SEMUA isi bilah — padding, huruf, tombol, dan
+ *               piringan. Dipisah supaya isinya bisa dikecilkan lewat satu
+ *               angka tanpa ikut mengubah lebar bilahnya.
+ * Jadi kalau bilahnya terasa terlalu gemuk atau terlalu ramping, yang disetel
+ * cukup faktor pada --player-u.
+ */
+.card {
+  --player-w: calc(var(--stage-w) * 0.88);
+  --player-u: calc(var(--player-w) * 0.76);
+
+  position: relative;
+  width: var(--player-w);
+  /*
+   * Padding kanan jauh lebih lebar daripada sisi lain karena dek putar
+   * diletakkan absolut di atasnya (lihat .deck). Ruang inilah yang menjaga
+   * judul lagu tidak pernah menyelinap ke bawah piringan — karena keduanya
+   * memakai --player-u, keselarasannya bertahan di ukuran berapa pun.
+   */
+  padding: calc(var(--player-u) * 0.042) calc(var(--player-u) * 0.48)
+    calc(var(--player-u) * 0.042) calc(var(--player-u) * 0.05);
+  border-radius: calc(var(--player-u) * 0.06);
+  /*
+   * Sengaja PEKAT, bukan semi-transparan dengan backdrop-filter. Blur latar
+   * harus dihitung ulang tiap frame selama kartu ini bergeser dan memudar
+   * masuk, dan itulah yang bikin animasi masuknya tersendat. Latarnya sendiri
+   * kertas polos, jadi blur-nya nyaris tak kelihatan — tidak sepadan.
+   */
+  background: linear-gradient(180deg, #fffdf8 0%, #f0ebe2 100%);
+  border: 1px solid rgba(142, 17, 25, 0.1);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 8px 20px rgba(60, 35, 25, 0.14);
+  /* Induknya (dock) tembus sentuhan supaya sisa lebarnya tidak menghalangi
+     surat di baliknya; kartunya sendiri harus bisa ditekan. */
+  pointer-events: auto;
+}
+
+/* --- Teks --- */
+.info {
+  min-width: 0;
+}
+
+/*
+ * Satu baris saja, dipotong dengan elipsis. Kalau dibiarkan turun baris,
+ * tinggi bilah ikut berubah mengikuti panjang judul — padahal tinggi itulah
+ * yang menentukan seberapa jauh piringan menyembul keluar.
+ */
+.title,
+.artist {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: calc(var(--player-u) * 0.055);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.artist {
+  margin-top: calc(var(--player-u) * 0.004);
+  font-size: calc(var(--player-u) * 0.036);
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  color: var(--ink-soft);
+}
+
+/* --- Tombol --- */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--player-u) * 0.028);
+  margin-top: calc(var(--player-u) * 0.03);
+}
+
+.button {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--player-u) * 0.072);
+  height: calc(var(--player-u) * 0.072);
+  border-radius: 50%;
+  color: var(--ink-soft);
+  transition: color 200ms ease, transform 200ms ease;
+}
+
+.button:active {
+  transform: scale(0.92);
+}
+
+.button svg {
+  width: 62%;
+  height: 62%;
+}
+
+.play {
+  width: calc(var(--player-u) * 0.088);
+  height: calc(var(--player-u) * 0.088);
+  background: var(--ink-red);
+  color: var(--paper);
+  box-shadow: 0 3px 8px rgba(142, 17, 25, 0.32);
+}
+
+.time {
+  margin-left: calc(var(--player-u) * 0.01);
+  font-variant-numeric: tabular-nums;
+  font-size: calc(var(--player-u) * 0.03);
+  color: var(--ink-soft);
+}
+
+.sep {
+  margin: 0 calc(var(--player-u) * 0.012);
+  opacity: 0.45;
+}
+
+/* --- Dek putar --- */
+/*
+ * Diposisikan absolut, jadi tinggi bilah ditentukan murni oleh blok teks di
+ * kiri. Karena piringannya lebih besar daripada tinggi itu, ia menyembul
+ * keluar di atas dan di bawah — kartu induknya sengaja tanpa overflow: hidden.
+ *
+ * Pergeseran -50% vertikalnya diurus lewat animasi di MusicPlayer.tsx, bukan
+ * di sini: kalau ditulis sebagai `transform` di CSS, ia akan ditimpa oleh
+ * transform yang dipasang motion saat animasi masuk berjalan.
+ */
+.deck {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--player-u) * 0.03);
+  width: calc(var(--player-u) * 0.42);
+  height: calc(var(--player-u) * 0.42);
+}
+
+.disc {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  /* Alur piringan hitam: cincin gelap-terang yang berulang rapat. */
+  background:
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      #1d1917 0 calc(var(--player-u) * 0.006),
+      #2a2422 calc(var(--player-u) * 0.006) calc(var(--player-u) * 0.011)
+    ),
+    #1d1917;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 5px 13px rgba(40, 25, 20, 0.35);
+  animation: spin 7s linear infinite;
+  animation-play-state: paused;
+}
+
+.card[data-playing='true'] .disc {
+  animation-play-state: running;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sampul lagu jadi label di tengah piringan. */
+.cover {
+  position: absolute;
+  inset: 21%;
+  width: 58%;
+  height: 58%;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.spindle {
+  position: absolute;
+  inset: 46%;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* --- Lengan pikap --- */
+/*
+ * Poros lengan berada di luar tepi kanan atas piringan. Seluruh lengan
+ * berputar pada poros itu — persis seperti pikap sungguhan — sehingga cukup
+ * satu rotasi untuk mengangkat/menurunkan jarumnya.
+ *
+ * Arah ayunannya penting: saat memutar, jarum harus turun MENDEKATI piringan,
+ * artinya lengan berayun berlawanan arah jarum jam (sudutnya mengecil). Saat
+ * jeda ia berayun balik searah jarum jam, terangkat menjauh.
+ */
+.arm {
+  position: absolute;
+  top: calc(var(--player-u) * -0.04);
+  right: calc(var(--player-u) * -0.05);
+  width: calc(var(--player-u) * 0.07);
+  height: calc(var(--player-u) * 0.07);
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, #cfd3d8, #f6f8fa 25%, #b6bcc2 50%, #eef1f3 75%, #cfd3d8);
+  box-shadow: 0 2px 5px rgba(40, 25, 20, 0.3);
+  transform: rotate(16deg);
+  transition: transform 700ms var(--ease-out-expo);
+}
+
+.card[data-playing='true'] .arm {
+  transform: rotate(-8deg);
+}
+
+.armRod {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  width: calc(var(--player-u) * 0.2);
+  height: calc(var(--player-u) * 0.013);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #e9ecef 0%, #b9bfc5 55%, #8d949a 100%);
+  box-shadow: 0 1px 3px rgba(40, 25, 20, 0.3);
+  /* Berporos di ujung kanan, yaitu di titik pusat poros lengan. */
+  transform-origin: 100% 50%;
+  /*
+   * Sudut NEGATIF supaya batang mengarah ke kiri-BAWAH, yaitu ke arah pusat
+   * piringan. Dengan sudut positif ia justru menunjuk ke kiri-atas, menjauh
+   * dari piringan, dan ayunan saat memutar jadi terbaca terbalik.
+   */
+  transform: rotate(-40deg);
+}
+
+/* --- Progres --- */
+/*
+ * Garis tipis menempel di tepi bawah bilah, jadi indikator ini tidak
+ * menambah tinggi sama sekali.
+ *
+ * Ujung kanannya berhenti sejajar dengan blok teks di atasnya — angkanya
+ * sengaja sama dengan padding kanan .card. Kalau memakai jarak tepi biasa,
+ * garisnya menerus sampai ke bawah piringan dan terbaca seperti kabel yang
+ * menancap ke kaset, bukan sebagai penunjuk posisi lagu.
+ */
+.progress {
+  position: absolute;
+  left: calc(var(--player-u) * 0.05);
+  right: calc(var(--player-u) * 0.48);
+  bottom: calc(var(--player-u) * 0.022);
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(44, 39, 36, 0.12);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ink-red);
+  /* width diatur lewat style inline sesuai progres pemutaran */
+}

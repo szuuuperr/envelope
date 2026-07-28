@@ -1,0 +1,290 @@
+/*
+ * Semua lapisan halaman surat ditumpuk sebagai saudara di dalam .root.
+ * Hanya .page yang menggulir; latar kertas, bunga sudut, dan tekstur tetap
+ * diam. Kalau hiasan ditaruh DI DALAM .page, ia akan ikut tergulir dan
+ * properti `bottom` akan mengacu ke ujung seluruh isi, bukan ke tepi layar.
+ */
+.root {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+.paperBg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    170deg,
+    #fffdf8 0%,
+    var(--paper) 45%,
+    var(--paper-edge) 100%
+  );
+}
+
+.page {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  color: var(--ink);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* Bunga sudut, di bawah teks agar tetap terbaca, bergoyang pelan supaya
+   halaman surat ikut terasa hidup. */
+.corners {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.corner {
+  position: absolute;
+  height: auto;
+  will-change: transform;
+}
+
+.cornerTop {
+  top: calc(var(--stage-w) * -0.14);
+  left: calc(var(--stage-w) * -0.16);
+  width: calc(var(--stage-w) * 0.62);
+  opacity: 0.3;
+}
+
+.cornerBottom {
+  bottom: calc(var(--stage-w) * -0.12);
+  right: calc(var(--stage-w) * -0.18);
+  width: calc(var(--stage-w) * 0.55);
+  opacity: 0.26;
+}
+
+.cornerDragonfly {
+  top: 34%;
+  right: calc(var(--stage-w) * 0.04);
+  width: calc(var(--stage-w) * 0.16);
+  opacity: 0.22;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    transparent 55%,
+    rgba(90, 60, 40, 0.14) 100%
+  );
+}
+
+.flow {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * Tiap bagian memenuhi satu layar penuh. Isinya ditengahkan secara vertikal
+ * supaya kutipan yang pendek maupun yang agak panjang sama-sama duduk di
+ * tengah, dan pembaca selalu berhadapan dengan satu gagasan saja.
+ */
+.screen {
+  min-height: var(--stage-h);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--stage-w) * 0.03);
+  /*
+   * Padding bawah sengaja jauh lebih besar daripada sisi lain: dock pemutar
+   * musik mengambang tetap di bagian bawah layar (lihat .musicDock), jadi
+   * ruang ini menjaga teks yang ditengahkan vertikal tidak pernah turun
+   * sampai tertutup olehnya, berapa pun panjang kutipan/attribution-nya.
+   */
+  padding: calc(var(--stage-h) * 0.1) calc(var(--stage-w) * 0.09)
+    calc(var(--stage-h) * 0.24);
+  text-align: center;
+}
+
+/* --- Hero --- */
+.eyebrow {
+  font-size: calc(var(--stage-w) * 0.032);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.heroTitle {
+  font-family: var(--font-serif);
+  font-size: calc(var(--stage-w) * 0.2);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-red);
+}
+
+.heroScript {
+  font-family: var(--font-script);
+  font-size: calc(var(--stage-w) * 0.19);
+  line-height: 1.05;
+  color: var(--ink-red);
+  margin-top: calc(var(--stage-w) * -0.02);
+}
+
+.heroSubtitle {
+  margin-top: calc(var(--stage-w) * 0.05);
+  font-size: calc(var(--stage-w) * 0.04);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* --- Kutipan --- */
+.mark {
+  font-family: var(--font-serif);
+  font-size: calc(var(--stage-w) * 0.24);
+  line-height: 0.6;
+  color: var(--ink-red);
+  opacity: 0.25;
+  /* Tanda kutip hanya hiasan; dijauhkan dari alur baca. */
+  margin-bottom: calc(var(--stage-w) * 0.03);
+}
+
+.quote {
+  font-family: var(--font-serif);
+  font-size: calc(var(--stage-w) * 0.088);
+  font-weight: 500;
+  line-height: 1.34;
+  letter-spacing: -0.005em;
+  color: var(--ink-red);
+  text-wrap: balance;
+}
+
+.source {
+  margin-top: calc(var(--stage-w) * 0.07);
+  font-size: calc(var(--stage-w) * 0.032);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/*
+ * Dock pemutar musik. Ditempatkan sebagai anak langsung .root (bukan .page)
+ * supaya posisinya tetap di layar walau isinya digulir. Membentang selebar
+ * kanvas dan hanya menengahkan bilahnya; lebar bilah beserta jarak ke tepi
+ * layar diatur di MusicPlayer.module.css lewat --player-w.
+ *
+ * Tembus sentuhan, kalau tidak seluruh pita selebar layar ini akan menelan
+ * ketukan yang seharusnya sampai ke surat di baliknya. Bilah pemutarnya
+ * sendiri mengembalikan pointer-events: auto untuk dirinya.
+ */
+.musicDock {
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--stage-h) * 0.035);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/*
+ * Indikator scroll — anak biasa di dalam alur hero (lihat Invitation.tsx),
+ * bukan lagi diposisikan lewat persentase stage-h. Posisi berbasis
+ * persentase sempat membuatnya bertumpuk dengan subtitle hero di layar
+ * lebar, karena tinggi konten hero (mengikuti stage-w) dan posisi elemen
+ * ini (dulu mengikuti stage-h) tidak selalu berbanding lurus. Sebagai anak
+ * flex biasa, jaraknya terhadap subtitle selalu benar di ukuran layar apa
+ * pun, sekaligus otomatis tetap berada di atas dock pemutar musik karena
+ * `.screen` sudah menyediakan padding-bottom yang lega untuk itu.
+ */
+.scrollCue {
+  margin-top: calc(var(--stage-w) * 0.09);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--stage-w) * 0.02);
+  font-size: calc(var(--stage-w) * 0.026);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+
+/*
+ * Sepasang tombol penutup surat. Jarak atasnya dipasang di pembungkus ini,
+ * bukan di masing-masing tombol, supaya keduanya terbaca sebagai satu ajakan
+ * dan tidak menempel pada kalimat terakhir.
+ *
+ * Ditumpuk ke bawah, bukan berdampingan: label keduanya panjang dan berspasi
+ * huruf lebar, sehingga sejajar di kanvas selebar ini pasti terpotong.
+ */
+.closingActions {
+  margin-top: calc(var(--stage-w) * 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--stage-w) * 0.035);
+}
+
+/* Bentuk pil yang sama untuk keduanya; yang membedakan hanya warnanya. */
+.flowerButton,
+.replyButton {
+  padding: calc(var(--stage-w) * 0.032) calc(var(--stage-w) * 0.085);
+  border-radius: 999px;
+  font-size: calc(var(--stage-w) * 0.032);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 250ms ease, background-color 250ms ease;
+}
+
+.flowerButton {
+  background: var(--ink-red);
+  color: var(--paper);
+  box-shadow: 0 6px 16px rgba(142, 17, 25, 0.28);
+}
+
+.flowerButton:hover {
+  box-shadow: 0 8px 22px rgba(142, 17, 25, 0.38);
+}
+
+/* Tombol kedua sengaja lebih tenang — hanya bergaris, supaya yang merah
+   tetap jadi ajakan utama dan keduanya tidak saling berebut perhatian. */
+.replyButton {
+  background: transparent;
+  color: var(--ink-red);
+  border: 1px solid rgba(142, 17, 25, 0.35);
+}
+
+.replyButton:hover {
+  background: rgba(142, 17, 25, 0.07);
+}
+
+.scrollCue span {
+  display: block;
+  width: 1px;
+  height: calc(var(--stage-w) * 0.09);
+  background: linear-gradient(180deg, var(--ink-soft), transparent);
+}

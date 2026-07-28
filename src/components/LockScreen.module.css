@@ -1,0 +1,174 @@
+.screen {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--stage-w) * 0.07);
+  padding: calc(var(--stage-w) * 0.08);
+  background:
+    radial-gradient(circle at 50% 22%, var(--red-600) 0%, var(--red-800) 45%, var(--red-900) 100%);
+  color: var(--paper);
+  text-align: center;
+}
+
+.texture {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/*
+ * Setiap kelompok dibuat flex-column yang meratakan isinya sendiri ke tengah.
+ * Mengandalkan `text-align: center` dari induk saja tidak cukup: elemen blok
+ * yang lebih sempit dari induknya (mis. karena max-width) tetap menempel ke
+ * kiri walau teks di dalamnya rata tengah.
+ */
+.group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.head {
+  gap: calc(var(--stage-w) * 0.045);
+}
+
+.status {
+  gap: calc(var(--stage-w) * 0.035);
+}
+
+.lock {
+  width: calc(var(--stage-w) * 0.115);
+  height: calc(var(--stage-w) * 0.115);
+  color: var(--wax);
+  opacity: 0.9;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: calc(var(--stage-w) * 0.068);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.hint {
+  /* Cukup lebar agar patahan barisnya jatuh di batas frasa yang wajar. */
+  max-width: 30ch;
+  /* Tanpa margin otomatis, kotak yang dipersempit max-width akan rata kiri. */
+  margin-inline: auto;
+  font-size: calc(var(--stage-w) * 0.032);
+  line-height: 1.55;
+  opacity: 0.72;
+  text-wrap: balance;
+}
+
+/* --- Titik indikator --- */
+.dots {
+  display: flex;
+  /* Wajib: .dots adalah flex container selebar induknya, jadi tanpa ini
+     titik-titiknya akan berkumpul di tepi kiri, bukan di tengah. */
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--stage-w) * 0.045);
+}
+
+.dots[data-error='true'] {
+  animation: shake 420ms var(--ease-in-out);
+}
+
+.dot {
+  width: calc(var(--stage-w) * 0.035);
+  height: calc(var(--stage-w) * 0.035);
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid rgba(246, 242, 233, 0.55);
+  transition: background-color 160ms ease, transform 160ms ease, border-color 160ms ease;
+}
+
+.dot[data-filled='true'] {
+  background: var(--paper);
+  transform: scale(1.12);
+}
+
+.dots[data-error='true'] .dot {
+  border-color: var(--wax);
+  background: var(--wax);
+}
+
+/* Digoyang sebagai satu baris utuh. Kalau tiap titik digoyang sendiri-sendiri,
+   transform-nya menimpa scale pada titik yang sudah terisi. */
+@keyframes shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-7px); }
+  40%, 60% { transform: translateX(7px); }
+}
+
+/* Tingginya dikunci agar munculnya pesan error tidak menggeser keypad,
+   tapi pakai min-height supaya teks tidak pernah terpotong. */
+.error {
+  min-height: calc(var(--stage-w) * 0.045);
+  font-size: calc(var(--stage-w) * 0.03);
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wax);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.error[data-show='true'] {
+  opacity: 1;
+}
+
+/* --- Keypad --- */
+.pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+  gap: calc(var(--stage-w) * 0.035);
+  width: calc(var(--stage-w) * 0.66);
+  margin-inline: auto;
+}
+
+.key {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  font-family: var(--font-serif);
+  font-size: calc(var(--stage-w) * 0.062);
+  line-height: 1;
+  color: var(--paper);
+  background: rgba(246, 242, 233, 0.08);
+  border: 1px solid rgba(246, 242, 233, 0.16);
+  display: grid;
+  place-items: center;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.key:active {
+  background: rgba(246, 242, 233, 0.24);
+  transform: scale(0.94);
+}
+
+.key[data-ghost='true'] {
+  background: none;
+  border-color: transparent;
+}
+
+.key[data-ghost='true']:active {
+  background: rgba(246, 242, 233, 0.1);
+}
+
+.key svg {
+  width: calc(var(--stage-w) * 0.062);
+  height: calc(var(--stage-w) * 0.062);
+  display: block;
+}
