@@ -4,7 +4,6 @@ import { config } from "../config";
 import { Flowers, type FlowersHandle } from "./Flowers";
 import { PaperBackdrop, PaperOverlay } from "./PaperLayers";
 import { SectionView } from "./SectionView";
-import { MusicPlayer } from "./MusicPlayer";
 import styles from "./Invitation.module.css";
 
 export function Invitation() {
@@ -74,15 +73,6 @@ export function Invitation() {
                   // jadi tombolnya baru terlihat setelah kalimat penutup
                   // benar-benar tergulir sampai habis.
                   <div className={styles.closingActions}>
-                    <motion.button
-                      type="button"
-                      className={styles.flowerButton}
-                      onClick={() => flowersRef.current?.launchAnimation()}
-                      whileTap={{ scale: 0.94 }}
-                    >
-                      {config.closing.button}
-                    </motion.button>
-
                     <motion.a
                       className={styles.replyButton}
                       href={`https://wa.me/${config.closing.whatsapp}`}
@@ -105,12 +95,6 @@ export function Invitation() {
       {/* Di luar .page supaya bunga melintasi seluruh layar, bukan hanya
           sepotong surat yang sedang tergulir. */}
       <Flowers ref={flowersRef} />
-
-      {/* Mengambang tetap di layar (bukan anak .page), supaya lagu bisa
-          dijeda/diputar kapan pun tanpa peduli seberapa jauh surat digulir. */}
-      <div className={styles.musicDock}>
-        <MusicPlayer />
-      </div>
     </motion.div>
   );
 }

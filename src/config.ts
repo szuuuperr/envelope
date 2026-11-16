@@ -68,27 +68,75 @@ export const config = {
   sections: [
     {
       kind: 'quote',
-      body: 'haloo liaaa',
+      body: 'haii lia 👋🏻',
     },
     {
       kind: 'quote',
-      body: 'gimana kabar kamu?? semoga baik yaa..',
+      body: 'selamat pagi, siang, malam. gimana kabar kamu?? semoga baik yaa..',
     },
     {
       kind: 'quote',
-      body: 'eee aku bingung harus mulai dari mana, tapi jujur web ini aku buat bener-bener untuk minta maaf ke kamu, meski waktu itu aku udah minta maaf dan kamu maafin, cuman aku masih ngerasa gak enak sama kamu.',
+      body: 'aku disini cuman mau cerita aja tentang pengalaman ku KKN kemarin.',
     },
     {
       kind: 'quote',
-      body: 'Kalau emang waktu kita ketemu, aku gabisa ngetreat kamu dengan baik, maafin aku yaa.. jujur, aku gaada maksud untuk ngelakuin itu. Aku tau aku salah dan aku terima kalo ini konsekuensinya.',
+      body: 'tau gasih kalo sebenernya aku gaada niatan ikut KKN di semester ini, cuman waktu itu aku diajakin temen aku buat daftar KKN dan alhamdulilah aku lolos seleksi dan berangkat ke NTT.',
     },
     {
       kind: 'quote',
-      body: 'Sebenarnya aku masih berharap untuk bisa sama" lagi. cuman kalo pada akhirnya kamu ngerasa gabisa, yaa it\'s okay... aku tahu kamu punya hak untuk itu, but i hope we can meet again someday',
+      body: 'awalnya aku expect kalo KKN ini bakal sama seperti KKN" yang lain, tapi ternyata diluar ekpetasi ku dan sangat berkesan banget buat aku.',
     },
     {
       kind: 'quote',
-      body: 'Semoga kamu sehat" yaa dan semoga bisa cepet lulus biar bisa aku panggil bu lia, hehe. i will be sooooooo proud, Semangattttt!!!',
+      body: 'jadi persiapan kkn ini bener" mepet banget, dari awal pengumuman sampai keberangkatan cuman ada waktu 10 hari. Terus kita sekelompok baru temu perdana h-2 sebelum keberangkatan dan bener" belom kenal satu sama lain.',
+    },
+    {
+      kind: 'quote',
+      body: 'Waktu itu kita berangkat dari kampus ke jakarta terus lanjut ke labuan bajo. nah dari bajo lanjut ke manggarai naik mobil ber-delapan dan itu bener-bener sempit banget sampe gabisa pindah posisi, ditambah lagi jalannya yang beuhhhh.., kayak roller coster.',
+    },
+    {
+      kind: 'quote',
+      body: 'Sampe manggarai jam 11 malam dan disana aku langsung mandi dan waktu mandi... Air nya itu dingin bangett, kataku kayak air es. dan jujur disitu aku capekk bangettt.',
+    },
+    {
+      kind: 'quote',
+      body: 'nah besoknya kita ada acara penyambutan dari pihak UNIKA (jadi kkn ini kolaborasi sama kampus di manggarai) sekalian temu perdana sama dpl. bu yeiyien namanya, di orang bali yang udah tinggal lama di ruteng.',
+    },
+    {
+      kind: 'quote',
+      body: 'setelah acara kita lanjut ke desa ketemu sama PJ kades dan perangkat desa lainnya. jadi aku di tempatin di desa ranaka, desa ini itu desa yang paling ujung di provinsi manggarai dan lumayan jauh dari penginapan.',
+    },
+    {
+      kind: 'quote',
+      body: 'Selama KKN aku ketemu PJ kades yang baik banget, namanya itu pak marco cuman kita sering panggil dia pak PJ.',
+    },
+    {
+      kind: 'quote',
+      body: 'terus juga selama di desa kita makan siang di salah satu rumah warga yang kebetulan juga perangkat desa. kita sering panggil mereka mama mari dan bapak yuan dan mereka berdua salah satu orang yang baikkkk bangetttt sampe kita sekelompok ngerasa mereka jadi papa mama kita selama kita di NTT.',
+    },
+    {
+      kind: 'quote',
+      body: 'mumpung di sana kita sekelompok juga sekalian jalan" ke beberapa tempat yang wahhhh, gilaa, bagussss bangetttt.',
+    },
+    {
+      kind: 'quote',
+      body: 'jadi kita pertama pergi ke ruteng pu\'u, ini kek komplek perumahan adat gitu. terus kita pergi ke danau rana mesa yang bagus bangett.',
+    },
+    {
+      kind: 'quote',
+      body: 'terus kita juga ke padang mosui yang view nya ada gunung dan pantai. terus kita ke nuca molas dan wahhh ituu vieww nya bagusss bangett. terakhir kita daki ke puncak ranaka yang gilaaa juga itu view nya.',
+    },
+    {
+      kind: 'quote',
+      body: 'Minimal sekali seumur hidup kamu harus ke NTT sihh, bener kata orang kalo NTT itu Negeri Titipan Tuhan.',
+    },
+    {
+      kind: 'quote',
+      body: 'Dan mungkin itu aja sedikit cerita aku, terimakasih udah mau baca.',
+    },
+    {
+      kind: 'quote',
+      body: 'aku liat kamu juga habis selesai PLP, gimana?? seru kah??',
     },
   ] satisfies Section[],
 }
